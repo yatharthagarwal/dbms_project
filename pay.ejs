@@ -61,6 +61,38 @@
 
     <!--Section-->
     <section id="main" style="background-image: url('img8.jpg'); height: 600px;">
+      <div class="container">
+      <div class="col s6">
+      <div class="card white">
+        <div class="card-content"> 
+          <span class="cart-title center"><h4>PAY</h4></span>
+          <div class="row">                    
+            <div class="output-field col s10">
+             <h5><label for="balance"><b>BALANCE</b></label></h5>                       
+              <i class="material-icons prefix">account_balance_wallet</i>
+              <output id="balance" type="balance" name="balance">                       
+            </div>
+            </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <i class="material-icons prefix">dialpad</i>
+              <input id="number" type="number" name="number" class="validate" required>
+              <label for="number">Mobile Number</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <i class="material-icons prefix">attach_money</i>
+              <input id="money" type="number" name="money" class="validate" required>
+              <label for="number">Amount</label>
+            </div>
+          </div>
+          <button class="btn waves-effect waves-light" type="submit" name="action">Pay
+            <i class="material-icons right">payment</i>
+        </div> 
+      </div>   
+      </div>
+      </div>
     </section>    
     <!--Footer-->
     <footer id="footer" class="page-footer grey darken-3">
