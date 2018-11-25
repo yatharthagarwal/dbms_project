@@ -44,6 +44,7 @@
       <li><a href="/pay" class="black-text">PAY<i class="material-icons black-text">payment</i></a></li>
       <li><a href="/out" class="black-text">LOGOUT<i class="material-icons black-text">power_settings_new</i></a></li>
       <li><a href="#" class="black-text">FAQ/Help<i class="material-icons black-text">help_outline</i></a></li>
+      <li><a href="/remove" class="black-text">REMOVE ACCOUNT<i class="material-icons black-text">remove</i></a></li>
     </ul>
 
     <div class="fixed-action-btn">
@@ -63,7 +64,7 @@
     <section id="main" style="padding-bottom: 300px">
       <div class="row">
         <div class="col s12">
-          <h5>WALLET BALANCE: 0.00 INR</h5>
+          <h5>WALLET BALANCE: <input id="balance" type="text" name="balance" disabled value="<%= balance %>"> INR</h5>
               </div>
             </div>
           <a class="waves-effect waves-light btn-large"><i class="large material-icons right">attach_money</i>ADD MONEY</a>  
@@ -76,8 +77,45 @@
           <h5>Payment History</h5>
         </div>
       </div>
-      
-      <div class="row">
+      <table>
+        <thead>
+          <tr>
+              <th>SEND TO</th>
+              <th>RECEIVER MOBILE NUMBER</th>
+              <th>AMOUNT</th>
+          </tr>
+        </thead>
+        <tbody>
+         <% for(var i=0; i < sentLength; i++) { %> 
+           <tr>
+            <td><%= sentRow[i].to_name %></td>
+            <td><%= sentRow[i].to_mobile %></td>
+            <td><%= sentRow[i].amount %></td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+      <hr>
+      <hr>
+      <table>
+        <thead>
+          <tr>
+              <th>RECEIVED FROM </th>
+              <th>SENDER MOBILE NUMBER</th>
+              <th>AMOUNT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var j=0; j< receiveLength; j++) { %> 
+            <tr>
+             <td><%= receiveRow[j].from_name %></td>
+             <td><%= receiveRow[j].from_mobile %></td>
+             <td><%= receiveRow[j].amount %></td>
+           </tr>
+           <% } %>
+         </tbody>
+      </table>
+     <!-- <div class="row">
         <div class="col s12 m4 l3">
           <div class="card-panel teal">
             <span class="white-text">First Payment</span>
@@ -108,7 +146,7 @@
             <span class="white-text">First Payment</span>
           </div>
         </div>
-      </div>
+      </div>-->
     </section>    
     <!--Footer-->
     <footer id="footer" class="page-footer grey darken-3">

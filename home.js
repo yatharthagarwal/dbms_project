@@ -21,7 +21,7 @@ app.use(cookieParser());
 //     cookie: { secure: true }
 //   }));
 
-app.use(session({secret: 'ssshhhhh'}));
+app.use(session({secret: 'abcd'}));
 
 app.use(bodyParser.urlencoded({extended: true}));
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -110,6 +110,14 @@ app.get('/out',function(req,res){
       })
 });
 
+app.get('/out1',function(req,res){
+    req.session.destroy(function(err) {
+        if(err) throw err;
+        res.render('home1');
+      })
+});
+
+
 app.post('/register1',urlencodedParser,function(req,res){
 
     var names=req.body.Name;
@@ -183,9 +191,49 @@ app.get('/profile',function(req,res){
 });
 
 app.get('/wallet',function(req,res){
-    res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/wallet.ejs'));
-    
-});
+    let user = req.session.user
+    let k="SELECT * FROM Wallet WHERE Wallet_id=" + user;
+    let balance;
+    con.query(k,(err,result) =>{
+        if(err) throw err;
+        balance = result[0].Amount_in_wallet;
+        // next();
+    })
+    //next();
+    let q="SELECT * FROM payment_history WHERE Wallet_id_from=" + user;
+    let sentRow = []
+    let sentLength
+    setTimeout(()=>{
+        con.query(q,(err,result) =>{
+            if(err) throw err;
+            sentRow = result;
+            sentLength = result.length
+            // next();
+        })
+    },50);
+
+    let c="SELECT * FROM payment_history WHERE wallet_id_to=" + user;
+    let receiveRow = []
+    let receiveLength;
+    setTimeout(()=>{
+        con.query(c,(err,result)=>{
+            if(err) throw err;
+            receiveRow=result;
+            receiveLength = result.length
+        })
+    },100);
+
+    setTimeout(() => {
+        console.log("balance", balance, "sent Row", sentRow, "receive row", receiveRow)
+        if((balance >= 0) && (sentLength >= 0) || (receiveLength >= 0)){
+            res.render('wallet',{ "balance" : balance, "sentRow" : sentRow, "receiveRow" : receiveRow, "sentLength" : sentLength, "receiveLength" : receiveLength });
+        }
+        else{
+            res.render('dashboard');
+        }
+    }, 150);   
+  });
+
 
 app.get('/bank',function(req,res){
     res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/link_bank.ejs'));
@@ -214,31 +262,44 @@ app.get('/pay',function(req,res){
 
 app.post('/payment',function(req,res){
     var t;
+    //var z;
  let user=req.session.user;
  var mob=req.body.number;
  var money=req.body.money;
  let q="select * from userdetail where mobile=?";
  let data=[mob];
- con.query(q,data,(error,result)=>{
-    if(error) throw error;
-     t=result[0].User_Id;
+ let row1=[]
+ con.query(q,data,(error1,result)=>{
+     if(error1) throw error1;
+    row1=result[0];   
 });
+let ab="SELECT * from userdetail where User_Id=" + user;
+let row= []
+  con.query(ab,(error,results1)=>{
+     if(error) throw error;
+     row=results1[0];
+     //z=results1[0].mobile;
+  });
     con.beginTransaction(function(err) {
     if (err) { throw err; }
-    con.query("UPDATE Wallet SET Amount_in_wallet=Amount_in_wallet+"+money+" WHERE Wallet_id="+t+";", function (error, results, fields) {
+    con.query("UPDATE Wallet SET Amount_in_wallet=Amount_in_wallet+"+money+" WHERE Wallet_id="+row1.User_Id+";", function (error, results, fields) {
       if (error) {
         return con.rollback(function() {
           throw error;
         });
       }
-      //else
-      //res.render('pay',{balance : results[0]});
         con.query("UPDATE Wallet SET Amount_in_wallet=Amount_in_wallet-"+money+" WHERE Wallet_id="+user +";", function (error, results1, fields) {
         if (error) {
           return con.rollback(function() {
             throw error;
           });
         }
+        con.query("INSERT INTO payment_history VALUES(null,?,?,?,?,?,?,?);",[user,row1.User_Id,row.Name,row1.Name,row.mobile,mob,money], function (error, results1, fields) {
+            if (error) {
+              return con.rollback(function() {
+                throw error;
+              });
+            }
         con.commit(function(err) {
           if (err) {
             return con.rollback(function() {
@@ -248,6 +309,7 @@ app.post('/payment',function(req,res){
           console.log('success!');
         });
         res.render('pay',{balance : results1[0]});
+    });
     });
     });
   });
@@ -260,8 +322,79 @@ app.get('/das',function(req,res){
     
 });
 
-app.get('/addit',function(req,res){
+/*app.get('/addit',function(req,res){
      
+});*/
+
+app.get('/remove',function(req,res){
+   res.render('remove');
+});
+
+app.get('/adminlogin',function(req,res){
+    res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/admin.ejs'));
+});
+
+app.post('/login2',urlencodedParser,function(req,res){
+
+    var email=req.body.email;
+    var password=req.body.password;
+    let q = "SELECT * FROM Admin WHERE Admin_email = ? and Admin_password=?";
+    let data = [email,password]
+    let flag = 0
+    con.query(q, data, (err,result) => {
+        if (err) 
+        throw err;
+
+        else if(result.length >0)
+        {
+            if(result[0].Admin_password == password)
+            {
+                //p=result[0].User_Id;
+                req.session.user=result[0].Admin_id;
+                x=req.session.user;
+                flag = 1
+                console.log("this is session1 => " + req.session.user)
+                //console.log(req.cookies);
+               // console.log('******************');
+                //console.log(req.session);
+                //res.render('profile',{ "user" : x});
+            }
+        }
+    });
+    let length1;
+    let hg1=[];
+     setTimeout(() => {
+        let a="SELECT * from userdetail";
+        con.query(a,(error,result)=>{
+            if(error) throw error;
+          hg1=result;
+          length1=hg1.length;
+        });
+     },50);
+     
+    let length2;
+    let hg2=[];
+     setTimeout(() => {
+        let a="SELECT * from payment_history";
+        con.query(a,(error,result)=>{
+            if(error) throw error;
+          hg2=result;
+          length2=hg2.length;
+        });
+     },50);
+
+    setTimeout(() => {
+        if(flag){
+            console.log("checked");
+            console.log("this is session2 => " + req.session.user)
+            console.log(length1);
+            res.render('admin_das', { "total" : length1 , "total1" : length2 });
+        }
+        else{
+            res.send(500,'Incorrect Information');
+        }
+    }, 100)
+        
 });
 
 app.listen(8000,function(){

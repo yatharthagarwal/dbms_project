@@ -36,32 +36,35 @@
     </div>
 
     <ul class="sidenav #ffffff white sidenav-fixed" id="mobile-demo">
-      <li b><a class="black-text" href="/das">Home<i class="material-icons black-text">home</i></a></li>
-      <li class="divider nogap"></li>
-      <li><a href="/profile" class="black-text">Profile<i class="material-icons black-text">account_circle</i></a></li>
-      <li><a href="/wallet" class="black-text">wallet<i class="material-icons black-text">account_balance_wallet</i></a></li>
-      <li><a href="/bank" class="black-text">Link Bank<i class="material-icons black-text">account_balance</i></a></li>
-      <li><a href="/pay" class="black-text">PAY<i class="material-icons black-text">add_shopping_cart</i></a></li>
-      <li><a href="/out" class="black-text">LOGOUT<i class="material-icons black-text">power_settings_new</i></a></li>
-      <li><a href="#" class="black-text">FAQ/Help<i class="material-icons black-text">help_outline</i></a></li>
-      <li><a href="/remove" class="black-text">REMOVE ACCOUNT<i class="material-icons black-text">remove</i></a></li>
+        <li b><a class="black-text" href="/das">Home<i class="material-icons black-text">home</i></a></li>
+        <li class="divider nogap"></li>
+        <li><a href="/out1" class="black-text">LOGOUT<i class="material-icons black-text">power_settings_new</i></a></li>
     </ul>
+  
+      <!--Section-->
+      <section id="main" style="background-image: url('img8.jpg'); height: 600px;">
+        <div class="row center">
+          <div class="col s3"></div>
+          <div class="col s6">
+              <div class="card white">
+                <div class="card-content"> 
+                  <h3>TOTAL NUMBER OF ACTIVE USERS :<input id="total" type="number" name="total" disabled value="<%= total %>"></h3>
+                </div>
+              </div>
+          </div>
+        </div>
+         
+        <div class="row center">
+            <div class="col s3"></div>
+            <div class="col s6">
+                <div class="card white">
+                  <div class="card-content"> 
+                    <h3>TOTAL NUMBER OF TRANSACTIONS :<input id="total" type="number" name="total" disabled value="<%= total1 %>"></h3>
+                  </div>
+                </div>
+            </div>
+          </div>
 
-    <div class="fixed-action-btn">
-      <a class="btn-floating btn-large red">
-        <i class="large material-icons">add</i>
-      </a>
-      <ul>
-        <li><a class="btn-floating red" href="/profile"><i class="material-icons">account_circle</i></a></li>
-        <li><a class="btn-floating #8e24aa purple darken-1" href="/wallet"><i class="material-icons">account_balance_wallet</i></a></li>
-        <li><a class="btn-floating green" href="/bank"><i class="material-icons">account_balance</i></a></li>
-        <li><a class="btn-floating blue" href="/pay"><i class="material-icons">add_shopping_cart</i></a></li>
-        <li><a class="btn-floating blue" href="/#"><i class="material-icons">help_outline</i></a></li>
-      </ul>
-    </div>
-
-    <!--Section-->
-    <section id="main" style="background-image: url('img8.jpg'); height: 600px;">
     </section>    
     <!--Footer-->
     <footer id="footer" class="page-footer grey darken-3">
@@ -96,9 +99,10 @@
       document.addEventListener('DOMContentLoaded', function() {
         var elems = document.querySelectorAll('.sidenav');
         var instances = M.Sidenav.init(elems, {});
-        
         var elems = document.querySelectorAll('.fixed-action-btn');
         var instances = M.FloatingActionButton.init(elems,{});
+        var elem = document.querySelector('.collapsible.expandable');
+        var instance = M.Collapsible.init(elem, {accordion: false});
       });
     </script>
     
