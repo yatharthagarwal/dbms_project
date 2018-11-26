@@ -9,6 +9,8 @@ var bodyParser = require('body-parser');
 var app=express();
 var x;
 var p;
+var bank;
+var amount;
 
 app.set('view engine', 'ejs');
 var publicDir = require('path').join(__dirname,'/image');
@@ -124,10 +126,13 @@ app.post('/register1',urlencodedParser,function(req,res){
     var mobile=req.body.number;
     var username=req.body.email;
     var password=req.body.password;
-    if((mobile>0)&&(mobile.length==10))
+    var password1=req.body.password1;
+  
+    console.log(bank);
+    if(((mobile>0)&&(mobile.length==10))&&(password==password1))
     {
-       let p = "INSERT INTO userdetail VALUES(null, ?, ?, ?, ?,'');"
-       let data = [names ,mobile, username, password]
+       let p = "INSERT INTO userdetail VALUES(null, ?, ?, ?, ?, ?, ?);"
+       let data = [names ,mobile, username, password,bank,amount];
          con.query(p, data, (err,result) => {
         if (err) throw err;
         let q="SELECT User_Id from userdetail where Username=?";
@@ -149,7 +154,31 @@ app.post('/register1',urlencodedParser,function(req,res){
         res.send(500,'incorrect data');
    }
 });
-   
+  
+app.post('/register2',urlencodedParser,function(req,res){
+
+    var names=req.body.Name;
+   // var mobile=req.body.number;
+    var username=req.body.email;
+    var password=req.body.password;
+    var password1=req.body.password1;
+    if(password==password1)
+    {
+       let p = "INSERT INTO Admin VALUES(null, ?, ?, ?)";
+       let data = [names, username, password]
+         con.query(p, data, (err,result) => {
+        if (err) throw err;
+        console.log("Account created");
+        res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/add_admin.ejs'));
+      });
+    }
+    else
+    {
+        res.send("Password sholud be same in both the fields");
+    }
+});
+
+
 app.post('/givepassword',urlencodedParser,function(req,res){
    var mob=req.body.number;
    var email=req.body.email;
@@ -159,8 +188,9 @@ app.post('/givepassword',urlencodedParser,function(req,res){
      if(err) throw err;
      else
      {
+         console.log(result[0].Password);
         res.json(result[0].Password); 
-         res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/forgot_pass.ejs'));
+         //res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/forgot_pass.ejs'));
      }
    });
 });
@@ -317,6 +347,7 @@ let row= []
    res.render('dashboard');
 });
 
+
 app.get('/das',function(req,res){
     res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/dashboard.ejs'));
     
@@ -330,8 +361,12 @@ app.get('/remove',function(req,res){
    res.render('remove');
 });
 
+app.get('/delete',function(req,res){
+        let q=""
+});
+
 app.get('/adminlogin',function(req,res){
-    res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/admin.ejs'));
+    res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/admin_login.ejs'));
 });
 
 app.post('/login2',urlencodedParser,function(req,res){
@@ -343,8 +378,7 @@ app.post('/login2',urlencodedParser,function(req,res){
     let flag = 0
     con.query(q, data, (err,result) => {
         if (err) 
-        throw err;
-
+            throw err;
         else if(result.length >0)
         {
             if(result[0].Admin_password == password)
@@ -354,49 +388,93 @@ app.post('/login2',urlencodedParser,function(req,res){
                 x=req.session.user;
                 flag = 1
                 console.log("this is session1 => " + req.session.user)
-                //console.log(req.cookies);
-               // console.log('******************');
-                //console.log(req.session);
-                //res.render('profile',{ "user" : x});
+                res.render('homepage');             
             }
-        }
-    });
-    let length1;
-    let hg1=[];
-     setTimeout(() => {
-        let a="SELECT * from userdetail";
-        con.query(a,(error,result)=>{
-            if(error) throw error;
-          hg1=result;
-          length1=hg1.length;
-        });
-     },50);
-     
-    let length2;
-    let hg2=[];
-     setTimeout(() => {
-        let a="SELECT * from payment_history";
-        con.query(a,(error,result)=>{
-            if(error) throw error;
-          hg2=result;
-          length2=hg2.length;
-        });
-     },50);
-
-    setTimeout(() => {
-        if(flag){
-            console.log("checked");
-            console.log("this is session2 => " + req.session.user)
-            console.log(length1);
-            res.render('admin_das', { "total" : length1 , "total1" : length2 });
-        }
-        else{
-            res.send(500,'Incorrect Information');
-        }
-    }, 100)
+         }
+         else{
+            res.redirect('/')
+         }
         
+    });  
+});
+
+app.get('/hp',function(req,res){
+   res.render('homepage');
+});
+
+app.get('/admin_profile',function(req,res){
+    let qs = "SELECT * FROM Admin WHERE Admin_id=" + req.session.user;
+    let row = []  ;
+    con.query(qs, (err, result1) => {
+      if(err) throw err;
+        row= result1[0];
+                         console.log(row);
+                         res.render('admin_das',{ "store" : row });
+    });
+});
+
+app.get('/admin_user',function(req,res){
+    let ab="SELECT * from userdetail";
+    let storeuser=[];
+    let userlength;
+    //setTimeout(()=> {
+       con.query(ab,(error,result)=>{
+        if(error) throw error;
+       storeuser=result;
+       userlength=storeuser.length;
+       console.log(storeuser);
+        res.render('tot_user',{ "length1" : storeuser, "length2" : userlength });
+         });
+       // },50);
+        
+});
+
+app.get('/admin_trans',function(req,res){
+    let q="SELECT * from payment_history";
+    let row=[];
+    let rowlength;
+    con.query(q,(error,result)=>{
+        if(error) throw error;
+       row=result;
+       rowlength=result.length;
+       console.log(row);
+       res.render('tot_trans',{"length3" : row, "length4" : rowlength });
+    });
+    
+});
+
+app.get('/addadmin',function(req,res){
+    res.render(path.join('/home/yatharth/Desktop/dbms_project/views'+'/add_admin.ejs'));
+});
+
+app.get('/axis',function(req,res){
+
+    bank="Axis Bank";
+    amount="1000";
+});
+
+app.get('/sbi',function(req,res){
+
+    bank="State Bank of India";
+    amount="1500";
+});
+app.get('/syn',function(req,res){
+
+    bank="Syndicate Bank";
+    amount="900";
+});
+app.get('/can',function(req,res){
+
+    bank="Canara Bank";
+    amount="1500";
+});
+app.get('/kar',function(req,res){
+
+    bank="Karnataka Bank";
+    amount="2000";
 });
 
 app.listen(8000,function(){
     console.log('listening to server 8000 ');
  });
+
