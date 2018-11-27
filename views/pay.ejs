@@ -40,7 +40,7 @@
       <li class="divider nogap"></li>
       <li><a href="/profile" class="black-text">Profile<i class="material-icons black-text">account_circle</i></a></li>
       <li><a href="/wallet" class="black-text">wallet<i class="material-icons black-text">account_balance_wallet</i></a></li>
-      <li><a href="/bank" class="black-text">Link Bank<i class="material-icons black-text">account_balance</i></a></li>
+      <li><a href="/survey1" class="black-text">Survey<i class="material-icons black-text">account_balance</i></a></li>
       <li><a href="/pay" class="black-text">PAY<i class="material-icons black-text">add_shopping_cart</i></a></li>
       <li><a href="/out" class="black-text">LOGOUT<i class="material-icons black-text">power_settings_new</i></a></li>
       <li><a href="#" class="black-text">FAQ/Help<i class="material-icons black-text">help_outline</i></a></li>
@@ -71,11 +71,11 @@
           <div class="row">                    
             <div class="output-field col s10">
              <h5><i class="large material-icons prefix">account_balance_wallet</i><label for="balance"><h3>BALANCE</h3></label></h5> 
-             <input id="balance" type="text" name="balance" disabled value="<%= balance.Amount_in_wallet %>"> 
-              <h8>INR</h8>
+             <input id="balance" type="text" name="balance" disabled value="<%= balancepay.Amount_in_wallet %>"> 
+              <h7>INR</h7>
             </div>
           </div>
-          <form action="payment" method="POST">
+          <form action="/payment" method="POST">
           <div class="row">
             <div class="input-field col s12">
               <i class="material-icons prefix">dialpad</i>

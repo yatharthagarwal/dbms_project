@@ -40,7 +40,7 @@
         <li class="divider nogap"></li>
         <li><a href="/profile" class="black-text">Profile<i class="material-icons black-text">account_circle</i></a></li>
         <li><a href="/wallet" class="black-text">wallet<i class="material-icons black-text">account_balance_wallet</i></a></li>
-        <li><a href="/bank" class="black-text">Link Bank<i class="material-icons black-text">account_balance</i></a></li>
+        <li><a href="/survey1" class="black-text">Survey<i class="material-icons black-text">account_balance</i></a></li>
         <li><a href="/pay" class="black-text">PAY<i class="material-icons black-text">add_shopping_cart</i></a></li>
         <li><a href="/out" class="black-text">LOGOUT<i class="material-icons black-text">power_settings_new</i></a></li>
         <li><a href="#" class="black-text">FAQ/Help<i class="material-icons black-text">help_outline</i></a></li>
@@ -61,36 +61,29 @@
       </div>
   
       <!--Section-->
-      <section id="main" style="background-image: url('img8.jpg'); height: 600px;">
-        <div class="row center">
-          <div class="col s3"></div>
-          <div class="col s6">
-              <div class="card white">
-                <div class="card-content"> 
-                
-                  <span class="card-title">PAYMENT HISTORY</span>
-                  <form id="details">
-                      <ul class="collapsible expandable">
-                          <li>
-                            <div class="collapsible-header"><i class="material-icons">filter_drama</i>First</div>
-                            <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-                          </li>
-                          <li>
-                            <div class="collapsible-header"><i class="material-icons">place</i>Second</div>
-                            <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-                          </li>
-                          <li>
-                            <div class="collapsible-header"><i class="material-icons">whatshot</i>Third</div>
-                            <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-                          </li>
-                        </ul>
-                  </form>
-                </div>
-              </div>
+      <section id="main">
+          <div class="row center">
+                <div class="parallax-container">
+                  <div class="parallax"><img src="img1.jpg"></div>
+                  </div>
+                  <div class="section white">
+                    <div class="row container">
+                      <h2 class="header">Parallax</h2>
+                      <p class="grey-text text-darken-3 lighten-3">Parallax is an effect where the background content or image in this case, is moved at a different speed than the foreground content while scrolling.
+  
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt porro ad magni, nulla provident eos non est perferendis voluptas modi perspiciatis sequi corporis veritatis harum dolores ipsa obcaecati laboriosam temporibus.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius beatae magni vel quo numquam repellendus cupiditate ut ab. Minima repellendus magnam nam aliquam, dolorem mollitia sit rerum eius deleniti sapiente!
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Consequuntur deserunt rerum tempora reiciendis, cupiditate non culpa laborum eius officia dicta mollitia nemo veritatis repellendus dolor tenetur doloribus repellat quam exercitationem.
+    
+                      </p>
+                    </div>
+                  </div>
+                  <div class="parallax-container">
+                    <div class="parallax"><img src="img2.jpg"></div>
+                  </div>
+            </div>
           </div>
-        </div>
-
-    </section>    
+        </section>     
     <!--Footer-->
     <footer id="footer" class="page-footer grey darken-3">
       <div class="container">
@@ -126,8 +119,8 @@
         var instances = M.Sidenav.init(elems, {});
         var elems = document.querySelectorAll('.fixed-action-btn');
         var instances = M.FloatingActionButton.init(elems,{});
-        var elem = document.querySelector('.collapsible.expandable');
-        var instance = M.Collapsible.init(elem, {accordion: false});
+        var elems = document.querySelectorAll('.parallax');
+        var instances = M.Parallax.init(elems, {});
       });
     </script>
     
