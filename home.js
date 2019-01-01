@@ -2,7 +2,7 @@ var express=require('express');
 var ejs=require('ejs');
 var path = require('path');
 var mysql=require('mysql');
-var validator = require('validator');
+//var validator = require('validator');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -64,7 +64,6 @@ app.get('/register',function(req,res){
 });
 
 app.post('/login1',urlencodedParser,function(req,res){
-
     var email=req.body.email;
     var password=req.body.password;
     let q = "SELECT * FROM userdetail WHERE Username = ? and Password=?";
@@ -73,7 +72,7 @@ app.post('/login1',urlencodedParser,function(req,res){
     con.query(q, data, (err,result) => {
         if (err) 
         throw err;
-
+        
         else if(result.length >0)
         {
             if(result[0].Password == password)
@@ -83,19 +82,24 @@ app.post('/login1',urlencodedParser,function(req,res){
                 flag = 1
                 console.log("this is session1 => " + req.session.user)
             }
+            /*else if((result[0].Password!== password)||(result[0].Username!=email))
+        {
+            res.send(500,'Incorrect Information');
+        }*/
         }
     });
 
-    setTimeout(() => {
+   setTimeout(() => {
         if(flag){
             console.log("checked");
             console.log("this is session2 => " + req.session.user)
             res.render('dashboard');
         }
-        else{
+        else
+        {
             res.send(500,'Incorrect Information');
         }
-    }, 100)
+    }, 100);
         
 });
 
@@ -496,8 +500,9 @@ app.post('/addmoney', urlencodedParser,function(req,res){
         if(err) throw err;
         amount= result[0].Amount_in_wallet;
     })
-    let pt="SELECT * FROM userdetail WHERE User_Id=" + user;
+   
      setTimeout(()=>{
+        let pt="SELECT * FROM userdetail WHERE User_Id=" + user;
          con.query(pt,(err,result) =>{
          if(err) throw err;
          amount1= result[0].Amount_in_bank;
@@ -505,6 +510,17 @@ app.post('/addmoney', urlencodedParser,function(req,res){
      })
      },50);
     let balance1;
+    setTimeout(()=>{
+    if((money<=amount1)&&(amount1>0))
+    {
+    //setTimeout(()=>{
+        let p="update userdetail set Amount_in_bank= ? where User_Id="+user;
+        let data1=[Number(amount1)-Number(money)]
+        con.query(p,data1,(error,result)=>{
+          if(error) throw error;
+          console.log("This is data1 ", data1)
+    })
+  // },100);
      setTimeout(()=>{
         let t="update Wallet set Amount_in_wallet= ? where Wallet_id="+user;
         let temp = Number(amount)+Number(money)
@@ -514,40 +530,55 @@ app.post('/addmoney', urlencodedParser,function(req,res){
            if(error) throw error;
            console.log("This is data ", data)
      })
-    },100);
-    setTimeout(()=>{
-        let p="update userdetail set Amount_in_bank= ? where User_Id="+user;
-    let data1=[Number(amount1)-Number(money)]
-        con.query(p,data1,(error,result)=>{
-          if(error) throw error;
-          console.log("This is data1 ", data1)
-    })
-   },150);
-
+    },150);
      res.redirect('/wallet');
      }
-});
-var t=true;
-app.get('/surveysubmit',function(req,res){
-    if(t){
-    var user=req.session.user;
-    let p="select Amount_in_wallet from Wallet where Wallet_id="+user;
-    let b;
-    con.query(p,(error,result)=>{
-        if(error) throw error;
-        b=result;
-    });
-    let q="update Wallet set Amount_in_wallet=? where Wallet_id="+user;
-    let temp=b+50;
-    let data=[temp];
-         con.query(q,data,(error,result)=>{
-              if(error) throw error;
-         });
+     else
+     {
+         res.send("Your bank account has:"+ amount1);
+     }
     
-        t=false;    
-    }
+    },100);
+   }
+});
+
+app.get('/surveysubmit',function(req,res){
+    let b;
+    var c=50;
+    var user=req.session.user;
+    let p="select * from Wallet where Wallet_id="+user;
+        con.query(p,(error,result)=>{
+        if(error) throw error;
+        b=result[0].Amount_in_wallet;
+        console.log("Tamount ",b);
+        console.log("Total after reward",b+50);
+    });
+
+        setTimeout(()=>{
+            let x="update Wallet set Amount_in_wallet= ? where Wallet_id="+user;
+            let data=[b+50];
+            con.query(x,data,(error,results1)=>{
+              if(error) throw error;      
+         });
+        },50);
     res.render('dashboard');
 });
+
+app.get('/amazon',function(req,res){
+   res.redirect('https://www.amazon.in')
+});
+
+app.get('/flipkart',function(req,res){
+    res.redirect('https://www.flipkart.com')
+ });
+
+ app.get('/pepper',function(req,res){
+    res.redirect('https://www.pepperfry.com')
+ });
+
+ app.get('/bigbasket',function(req,res){
+    res.redirect('https://www.bigbasket.com')
+ });
 
 app.listen(8000,function(){
     console.log('listening to server 8000 ');
